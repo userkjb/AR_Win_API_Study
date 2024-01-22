@@ -17,11 +17,20 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+// _In_ , _In_opt_ 는 지워도 된다. -> 이건 모든 os에서 돌아갈 수 있도록 하는 것이다.
+// APIENTRY = __stdcall 이다. -> 왠만하면 명시적으로 이걸 처리하라고 넣은 것.
+// __cdecl    -> C전역 함수 기본 정의
+// __thiscall -> 멤버 함수.
+// __stdcall  -> static 멤버 함수, static 멤버 변수 등과 같은 전역 전용.
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+    // 과거의 잔재.
+    // 경고 레벨이 높으면 인자를 받아놓고 사용을 안하면 경고가 난다.
+    // 위에 hPrevInstance, lpCmdLine를 인자로 넣어 놨는데 이 함수에서 사용을 하지 않는다.
+    // 그래서 경고 레벨을 조절해서 경고가 나오지 않도록 설정한 것이다.
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -30,6 +39,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_WIN, szWindowClass, MAX_LOADSTRING);
+    
+    // 이건 있어야 한다.
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
@@ -76,7 +87,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WIN));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WIN);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WIN); // 메뉴 창.
+    //wcex.lpszMenuName = nullptr; // 메뉴 창.
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -105,6 +117,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
 
+   // 출력.
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -160,6 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 // 정보 대화 상자의 메시지 처리기입니다.
+// 메뉴의 버튼을 클릭하면 실행.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
