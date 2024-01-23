@@ -38,12 +38,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+    // 단축키
     //HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MY001BASIC));
 
     MSG msg;
 
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    //while (GetMessage(&msg, nullptr, 0, 0))
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         //if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         if (!TranslateAccelerator(msg.hwnd, 0, &msg))
@@ -125,9 +127,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    // hWnd = 일이 발생한 윈도우의 핸들 - 어차피 1개 만들어서 의미 없다.
+    // message = 윈도우에서 발생한 일의 종류.
+    // wParam = 부가 스테이터스(마우스 포지션)
+    // lParam = 사용 안함.
     switch (message)
     {
-    case WM_COMMAND:
+    case WM_COMMAND: // Command 가 매뉴이다. = 게임에서 사용 안함.
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다:
@@ -147,8 +153,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
+            HDC hdc = BeginPaint(hWnd, &ps); // 윈도우를 그릴 수 있는 권한.
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+            Rectangle(hdc, 100, 100, 200, 200);
+
             EndPaint(hWnd, &ps);
         }
         break;
@@ -161,6 +169,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// 게임에서 사용하지 않아서 필요 없음.
 // 정보 대화 상자의 메시지 처리기입니다.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
